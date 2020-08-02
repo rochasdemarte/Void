@@ -1,0 +1,130 @@
+body{
+  background-color: black;
+  color: white;
+  font-size: 18px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 100;
+  line-height: 1.1em;
+  background: linear-gradient(90deg, rgb(40, 50, 80) -38%, rgb(0, 0, 10) 176%);
+}
+.menu-bar {
+  display: block;
+  cursor: pointer;
+  float: right;
+  margin: 5px;
+}
+.ferramentas {
+  cursor: pointer;
+  float: right;
+  margin-right: 16px;
+  margin-top: 5px;
+}
+.barra1, .barra2, .barra3 {
+  border-radius: 20px;
+  width: 35px;
+  height: 5px;
+  background-color: #fff;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.muda .barra1 {
+  -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+  transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.muda .barra2 {opacity: 0;}
+
+.muda .barra3 {
+  -webkit-transform: rotate(45deg) translate(-8px, -8px);
+  transform: rotate(45deg) translate(-8px, -8px);
+}
+.searchmatch {
+  font-weight: bold;
+  text-decoration-style: double;
+}
+
+.user-msg {
+  background-color: white;
+  color: black;
+  max-width: 75%;
+  border-radius: 0px 5px 5px 5px;
+  float: left;
+  margin: 2px;
+  margin-right: 50%;
+  padding: 15px;
+}
+
+.void-msg {
+  background-color: rgb(240,240,240);
+  color: black;
+  max-width: 75%;
+  border-radius: 5px 0px 5px 5px;
+  float: right;
+  margin: 2px;
+  margin-left: 50%;
+  padding: 15px;
+}
+
+.user-input {
+  width: 100%;
+  position: fixed;
+  bottom: 10px;
+  margin-left: 20px;
+}
+
+.palavras {
+  width: 80%;
+  height: 85%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: fixed;
+  border-radius: 5px;
+  left: 25px;
+  bottom: 60px;
+  box-shadow: inset 1px 1px 20px rgb(0,0,10);
+}
+
+.msg {
+  width: 50%;
+  height: 40px;
+  border: none;
+  font-size: 20px;
+  border-radius: 40px;
+}
+.btn {
+  border: none;
+  text-decoration: none;
+  background-color: white;
+  color: rgb(40, 50, 80);
+  font-size: 23px;
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+  border-radius: 50%;
+  transition: all 0.4s;
+}
+.btn:hover {
+  background-color: rgb(40, 50, 80);
+  color: white;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: grey;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: white;
+}
