@@ -212,7 +212,8 @@ const getWiki = (input) => {
     let resultado_0_title = resultadoBruto.query.search[0].title;
     let resultado_lista = resultadoBruto.query.search.length;
     console.log(resultado_lista);
-    falar(resultado_0);
+    let resultado_wiki_final = resultado_0.replace('<span class="searchmatch">','').replace('</span>','');
+    falar(resultado_wiki_final);
   })
 };
 //-----------------------------
