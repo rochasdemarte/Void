@@ -7,6 +7,10 @@ body{
   line-height: 1.1em;
   background: linear-gradient(90deg, rgb(40, 50, 80) -38%, rgb(0, 0, 10) 176%);
 }
+
+:focus {
+  outline: none;
+}
 .menu-bar {
   display: block;
   cursor: pointer;
