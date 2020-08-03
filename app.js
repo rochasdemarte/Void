@@ -126,24 +126,24 @@ const responder = (msgRaw) => {
     console.log(resposta);
     falar(resposta);
   }
-  if (msg.includes('bom dia')) {
+  else if (msg.includes('bom dia')) {
     let resposta = 'Bom dia, como está no dia de hoje?';
     console.log(resposta);
     falar(resposta);
   }
-  if (msg.includes('que horas são')) {
+  else if (msg.includes('que horas são')) {
     console.log(getHora());
     falar(getHora());
   }
-  if (msg.includes('que dia é hoje')) {
+  else if (msg.includes('que dia é hoje')) {
     console.log(getDia());
     falar(getDia());
   }
-  if (msg.includes('o que é')) {
+  else if (msg.includes('o que é')) {
     console.log('Pesquisando Wikpédia');
     getWiki(msg.slice(msg.lastIndexOf(' é ')+3));
   }
-  if (msg.includes('qual é o')) {
+  else if (msg.includes('qual é o')) {
     console.log('Pesquisando Wikpédia');
     getWiki(msg.slice(msg.lastIndexOf(' o ')+3));
   } else if (msg.includes('qual é a')) {
@@ -156,7 +156,7 @@ const responder = (msgRaw) => {
     console.log('Pesquisando Wikpédia');
     getWiki(msg.slice(msg.lastIndexOf(' as ')+4));
   }
-  if (msg.includes('qual a previsão do tempo em')) {
+  else if (msg.includes('qual a previsão do tempo em')) {
     console.log('prevendo');
     getPrevisãoTempo(msg.slice(msg.lastIndexOf(' em ')+4));
   } else if (msg.includes('qual a previsão do tempo na')) {
@@ -172,7 +172,7 @@ const responder = (msgRaw) => {
     console.log('prevendo');
     getPrevisãoTempo(msg.slice(msg.lastIndexOf(' nos ')+5));
   }
-  if (msg.includes('qual a temperatura em')) {
+  else if (msg.includes('qual a temperatura em')) {
     console.log('prevendo');
     getTemperatura(msg.slice(msg.lastIndexOf(' em ')+4));
   } else if (msg.includes('qual a temperatura na')) {
@@ -187,6 +187,9 @@ const responder = (msgRaw) => {
   } else if (msg.includes('qual a temperatura nos')) {
     console.log('prevendo');
     getPrevisãoTempo(msg.slice(msg.lastIndexOf(' nos ')+5));
+  } else {
+    console.log(resposta);
+    falar(resposta);
   }
 };
 //-----------------------------
@@ -209,7 +212,8 @@ const getWiki = (input) => {
     let resultado_0_title = resultadoBruto.query.search[0].title;
     let resultado_lista = resultadoBruto.query.search.length;
     console.log(resultado_lista);
-    falar(resultado_0);
+    let resultado_wiki_final = resultado_0.replace('<span class="searchmatch">','').replace('</span>','');
+    falar(resultado_wiki_final);
   })
 };
 //-----------------------------
