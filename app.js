@@ -26,6 +26,10 @@ fala.volume = 1;
 fala.rate = 1;
 fala.pitch = 1;
 //-----------------------------
+fala.onend = () => {
+  
+};
+//-----------------------------
 let on = false;
 
 const voidOnOff = () => {
@@ -107,7 +111,7 @@ const falar = (msg) => {
   div.innerHTML = msg;
   palavras.scrollTop = palavras.scrollHeight;
   fala.voice = synth.getVoices()[16];
-  let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|Nota:/g, '');
+  let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|&nbsp;Nota:&nbsp;/g, '');
   fala.text = msgNoSpan;
   synth.speak(fala);
 };
@@ -230,7 +234,7 @@ const getWiki = (input) => {
 //-----------------------------
 const getTemperatura = (cidade) => {
   //comando.split(' ')[5]
-  fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${wKey()}&units=metric&lang=pt_br`)
+  fetch(`https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${wKey()}&units=metric&lang=pt_br`)
   .then( response => response.json())
   .then((clima)=>{
     if (clima.cod === '404'){
@@ -244,7 +248,7 @@ const getTemperatura = (cidade) => {
 //-----------------------------
 const getPrevisãoTempo = (cidade) => {
   //comando.split(' ')[5]
-  fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${wKey()}&units=metric&lang=pt_br`)
+  fetch(`https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${wKey()}&units=metric&lang=pt_br`)
   .then((response)=>{
     return response.json();
   }).then((clima)=>{
