@@ -29,7 +29,7 @@ fala.pitch = 1;
 let on = false;
 
 const voidOnOff = () => {
-  if (micIcon.classList.contains('fa-microphone-slash')) {
+  if (!on) {
     micIcon.classList.remove('fa-microphone-slash');
     micIcon.classList.add('fa-microphone');
     ouvir();
@@ -107,7 +107,8 @@ const falar = (msg) => {
   div.innerHTML = msg;
   palavras.scrollTop = palavras.scrollHeight;
   fala.voice = synth.getVoices()[16];
-  fala.text = msg;
+  let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|Nota:/g, '');
+  fala.text = msgNoSpan;
   synth.speak(fala);
 };
 //-----------------------------
@@ -118,11 +119,21 @@ const responder = (msgRaw) => {
   let resposta = 'Não entendi';
 
   if (msg.includes('void desligar')) {
-    let resposta = 'Ok, desligando ';
+    if (on) {
+      let resposta = 'Ok, desligando ';
+      voidOnOff();
+    } else {
+      let resposta = 'Reconhecimento de voz desativado. Para ativa-lo digite ou diga Void Ligar.';
+    }
     console.log(resposta);
     falar(resposta);
   } else if (msg.includes('void ligar')) {
-    let resposta = 'Olá, como vai?';
+    if (!on) {
+      let resposta = 'Ok, desligando ';
+      voidOnOff();
+    } else {
+      let resposta = 'Já estou ouvindo, gostaria de alguma ajuda?';
+    }
     console.log(resposta);
     falar(resposta);
   }
@@ -212,7 +223,7 @@ const getWiki = (input) => {
     let resultado_0_title = resultadoBruto.query.search[0].title;
     let resultado_lista = resultadoBruto.query.search.length;
     console.log(resultado_lista);
-    let resultado_wiki_final = resultado_0.replace('<span class="searchmatch">','').replace('</span>','');
+    let resultado_wiki_final = resultado_0;
     falar(resultado_wiki_final);
   })
 };
