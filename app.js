@@ -1,5 +1,7 @@
 //-----------------------------
+const ferramentasBar = document.querySelector('.nav-ferramentas');
 const mb = document.querySelector('.menu-bar');
+let navBarOpen = false;
 const inputUser = document.querySelector('.msg');
 inputUser.focus();
 const send = document.querySelector('.send');
@@ -27,7 +29,7 @@ fala.rate = 1;
 fala.pitch = 1;
 //-----------------------------
 fala.onend = () => {
-  
+  ouvir();
 };
 //-----------------------------
 let on = false;
@@ -38,10 +40,12 @@ const voidOnOff = () => {
     micIcon.classList.add('fa-microphone');
     ouvir();
     on = true;
+    console.log('Void Ligando');
   } else {
     micIcon.classList.remove('fa-microphone');
     micIcon.classList.add('fa-microphone-slash');
     on = false;
+    console.log('Void Desligando');
   }
 };
 
@@ -63,6 +67,13 @@ inputUser.onkeydown = e =>{
 //-----------------------------
 let showBar = x => {
   x.classList.toggle("muda");
+  if (!navBarOpen) {
+    ferramentasBar.style.right = '0';
+    navBarOpen = true;
+  } else {
+    ferramentasBar.style.right = '-100px';
+    navBarOpen = false;
+  }
 }
 //-----------------------------
 const ler = () => {
@@ -81,7 +92,11 @@ const ler = () => {
 };
 //-----------------------------
 const ouvir = () => {
-  recognition.start();
+
+  if (!synth.speaking) {
+    recognition.start();
+  }
+
   recognition.onresult = evt => {
     console.log(evt);
     const transcript = Array.from(evt.results)
@@ -108,10 +123,13 @@ const falar = (msg) => {
   div = document.createElement('div');
   div.classList.add('void-msg');
   palavras.appendChild(div);
+  if (msg.includes('Nota:')) {
+    msg = msg.slice(msg.indexOf('.')+2);
+  }
   div.innerHTML = msg;
   palavras.scrollTop = palavras.scrollHeight;
   fala.voice = synth.getVoices()[16];
-  let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|&nbsp;Nota:&nbsp;/g, '');
+  let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|&nbsp;/g, '');
   fala.text = msgNoSpan;
   synth.speak(fala);
 };
@@ -119,6 +137,7 @@ const falar = (msg) => {
 const responder = (msgRaw) => {
 
   let msg = msgRaw.toLowerCase();
+  msg = msg.replace('?', '');
 
   let resposta = 'Não entendi';
 
@@ -133,7 +152,7 @@ const responder = (msgRaw) => {
     falar(resposta);
   } else if (msg.includes('void ligar')) {
     if (!on) {
-      let resposta = 'Ok, desligando ';
+      let resposta = 'Olá, em que posso ajudar?';
       voidOnOff();
     } else {
       let resposta = 'Já estou ouvindo, gostaria de alguma ajuda?';
@@ -154,7 +173,13 @@ const responder = (msgRaw) => {
     console.log(getDia());
     falar(getDia());
   }
-  else if (msg.includes('o que é')) {
+  else if (msg.includes('qual o significado da palavra')) {
+    console.log('Pesquisando Dicionário');
+    getDicio(msg.slice(msg.lastIndexOf(' palavra ')+9));
+  } else if (msg.includes('qual o significado de')) {
+    console.log('Pesquisando Dicionário');
+    getDicio(msg.slice(msg.lastIndexOf(' de ')+4));
+  } else if (msg.includes('o que é')) {
     console.log('Pesquisando Wikpédia');
     getWiki(msg.slice(msg.lastIndexOf(' é ')+3));
   }
@@ -230,6 +255,18 @@ const getWiki = (input) => {
     let resultado_wiki_final = resultado_0;
     falar(resultado_wiki_final);
   })
+};
+//-----------------------------
+const getDicio = (palavra) => {
+  fetch(`https://cors-anywhere.herokuapp.com/significado.herokuapp.com/${palavra}`)
+    .then( res => res.json())
+      .then( signif => {
+        let significado = signif[0].meanings[0];
+        let signifClasseGramatical = signif[0].class;
+        console.log(significado);
+        console.log(signifClasseGramatical);
+        falar(significado)
+      })
 };
 //-----------------------------
 const getTemperatura = (cidade) => {

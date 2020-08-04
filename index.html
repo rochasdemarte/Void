@@ -10,13 +10,12 @@
   </head>
   <body>
 
+    <div class="menu-bar" onclick="showBar(this)">
+      <div class="barra1"></div>
+      <div class="barra2"></div>
+      <div class="barra3"></div>
+    </div>
     <div class="nav-ferramentas">
-      <div class="menu-bar" onclick="showBar(this)">
-        <div class="barra1"></div>
-        <div class="barra2"></div>
-        <div class="barra3"></div>
-      </div>
-
       <button class="btn ferramentas"><i class="fa fa-search"></i></button>
 
       <button class="btn ferramentas"><i class="fa fa-file-text"></i></button>
@@ -26,17 +25,18 @@
       <button class="btn ferramentas"><i class="fa fa-clock-o"></i></button>
 
       <button class="btn ferramentas"><i class="fa fa-gear"></i></button>
-    </div>
-    <div class="voz-config">
-    </div>
 
-    <div class="palavras">
+      <button class="btn ferramentas"><i class="fa fa-gear"></i></button>
     </div>
+    <div class="screen-config">
+      <div class="palavras">
+      </div>
 
-    <div class="user-input">
-      <input class="msg" type="text" name="" value="">
-      <button class="btn send"><i class="fa fa-paper-plane"></i></button>
-      <button class="btn mic"><i class="fa fa-microphone-slash"></i></button>
+      <div class="user-input">
+        <input class="msg" type="text" name="" value="">
+        <button class="btn send"><i class="fa fa-paper-plane"></i></button>
+        <button class="btn mic"><i class="fa fa-microphone-slash"></i></button>
+      </div>
     </div>
   </body>
   <script type="text/javascript" src="./app.js">
