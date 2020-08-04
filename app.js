@@ -78,6 +78,19 @@ let showBar = x => {
   }
 }
 //-----------------------------
+window.onfocus = () => {
+  if (!onCounter) {
+    ouvir();
+  }
+}
+//-----------------------------
+window.onblur = () => {
+  if (!onCounter) {
+    recognition.abort();
+    recognition.removeEventListener('end', ouvir);
+  }
+}
+//-----------------------------
 fala.onstart = () => {
   recognition.abort();
   recognition.removeEventListener('end', ouvir);
@@ -123,7 +136,7 @@ const ouvir = () => {
       .map(result => result.transcript)
       .join('')
 
-    if (evt.results[0].isFinal && on) {
+    if (evt.results[0].isFinal && (on || transcript.toLowerCase() === 'ativar voz')) {
       idiv = document.createElement('div');
       idiv.classList.add('user-msg');
       palavras.appendChild(idiv);
