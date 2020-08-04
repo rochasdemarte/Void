@@ -5,3 +5,9 @@ let naoSei = [
   'Acho que não entendi',
   'talvez eu não tenha entendido, pode repetir por favor?'
 ];
+let saudacao = [
+  'Oi',
+  'Olá',
+  'E aí',
+  'Opa',
+];

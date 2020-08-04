@@ -168,3 +168,11 @@ div {
 ::-webkit-scrollbar-thumb:hover {
   background: white;
 }
+@media screen and (min-width: 640px){
+  .screen-config {
+    width: 70%;
+  }
+  .palavras {
+    width: 67%;
+  }
+}

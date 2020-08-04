@@ -13,6 +13,7 @@ const palavras = document.querySelector('.palavras');
 let div = document.createElement('div');
 let idiv = document.createElement('div');
 let brLine = document.createElement('br');
+let lastComando = '';
 const wKey = () =>{
   return '668ee6a4b1983a6a992d85802ac27508';
 }
@@ -30,17 +31,16 @@ fala.volume = 1;
 fala.rate = 1;
 fala.pitch = 1;
 //-----------------------------
-fala.onend = () => {
-  //ouvir();
-};
-//-----------------------------
 let on = false;
-
+let onCounter = true;
 const voidOnOff = () => {
   if (!on) {
     micIcon.classList.remove('fa-microphone-slash');
     micIcon.classList.add('fa-microphone');
-    ouvir();
+    if (onCounter) {
+      ouvir();
+      onCounter = false;
+    }
     on = true;
     console.log('Void Ligando');
   } else {
@@ -78,6 +78,27 @@ let showBar = x => {
   }
 }
 //-----------------------------
+fala.onstart = () => {
+  recognition.abort();
+  recognition.removeEventListener('end', ouvir);
+};
+//-----------------------------
+fala.onend = () => {
+  ouvir();
+};
+//-----------------------------
+const insereConversa = (isUser, text) => {
+  if (isUser) {
+    idiv = document.createElement('div');
+    idiv.classList.add('user-msg');
+    palavras.appendChild(idiv);
+    idiv.innerHTML = transcript;
+    palavras.scrollTop = palavras.scrollHeight;
+  } else {
+
+  }
+};
+//-----------------------------
 const ler = () => {
   let tscript = inputUser.value;
   idiv = document.createElement('div');
@@ -94,11 +115,7 @@ const ler = () => {
 };
 //-----------------------------
 const ouvir = () => {
-
-  if (!synth.speaking) {
-    recognition.start();
-  }
-
+  recognition.start();
   recognition.onresult = evt => {
     console.log(evt);
     const transcript = Array.from(evt.results)
@@ -106,7 +123,7 @@ const ouvir = () => {
       .map(result => result.transcript)
       .join('')
 
-    if (evt.results[0].isFinal) {
+    if (evt.results[0].isFinal && on) {
       idiv = document.createElement('div');
       idiv.classList.add('user-msg');
       palavras.appendChild(idiv);
@@ -121,18 +138,20 @@ const ouvir = () => {
 };
 //-----------------------------
 const falar = (msg) => {
-  div = document.createElement('div');
-  div.classList.add('void-msg');
-  palavras.appendChild(div);
-  if (msg.includes('Nota:')) {
-    msg = msg.slice(msg.indexOf('.')+2);
+  if (msg !== '' || msg !== ' ') {
+    div = document.createElement('div');
+    div.classList.add('void-msg');
+    palavras.appendChild(div);
+    if (msg.includes('Nota:')) {
+      msg = msg.slice(msg.indexOf('.')+2);
+    }
+    div.innerHTML = msg;
+    palavras.scrollTop = palavras.scrollHeight;
+    fala.voice = synth.getVoices()[16];
+    let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|&nbsp;/g, '');
+    fala.text = msgNoSpan;
+    synth.speak(fala);
   }
-  div.innerHTML = msg;
-  palavras.scrollTop = palavras.scrollHeight;
-  fala.voice = synth.getVoices()[16];
-  let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|&nbsp;/g, '');
-  fala.text = msgNoSpan;
-  synth.speak(fala);
 };
 //-----------------------------
 const responder = (msgRaw) => {
@@ -141,26 +160,28 @@ const responder = (msgRaw) => {
   msg = msg.replace('?', '');
 
   let resposta = naoSei[Math.floor(Math.random()*naoSei.length)];
-
   if (msg.includes('desativar voz')) {
+    let resposta = '';
     if (on) {
-      let resposta = 'Ok, desligando ';
+      resposta = 'Ok, desligando ';
       voidOnOff();
     } else {
-      let resposta = 'Reconhecimento de voz desativado. Para ativa-lo digite ou diga Void Ligar.';
+      resposta = 'Reconhecimento de voz desativado. Para ativá-lo digite ou diga Ativar voz.';
     }
     console.log(resposta);
     falar(resposta);
   } else if (msg.includes('ativar voz')) {
+    let resposta = '';
     if (!on) {
-      let resposta = 'Olá, em que posso ajudar?';
+      resposta = 'Olá, em que posso ajudar?';
       voidOnOff();
     }  else {
-      let resposta = 'Já estou ouvindo, em que posso ajudar?';
+      resposta = 'Já estou ouvindo, em que posso ajudar?';
     }
     console.log(resposta);
     falar(resposta);
-  } else if (msg.includes('full screen')||msg.includes('tela cheia')) {
+  }
+  else if (msg.includes('full screen')||msg.includes('tela cheia')) {
     let resposta = 'Ok';
     console.log(resposta);
     falar(resposta);
@@ -177,6 +198,11 @@ const responder = (msgRaw) => {
   }
   else if (msg.includes('bom dia')) {
     let resposta = 'Bom dia, como está no dia de hoje?';
+    console.log(resposta);
+    falar(resposta);
+  }
+  else if (msg.includes('oi') || msg.includes('olá') || msg.includes('e aí')|| msg.includes('ola') || msg.includes('e ai')) {
+    let resposta = saudacao[Math.floor(Math.random()*saudacao.length)];
     console.log(resposta);
     falar(resposta);
   }
@@ -246,6 +272,7 @@ const responder = (msgRaw) => {
     console.log(resposta);
     falar(resposta);
   }
+  lastComando = msgRaw;
 };
 //-----------------------------
 const getHora = () => {
