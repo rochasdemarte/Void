@@ -269,7 +269,11 @@ const getWiki = (input) => {
     let resultado_0_title = resultadoBruto.query.pages[0].title;
     console.log(resultado_0);
     let resultado_wiki_final = resultado_0;
-    falar(resultado_wiki_final);
+    if (resultado_wiki_final === '') {
+      getWikiList(pesquisa, false);
+    } else {
+      falar(resultado_wiki_final);
+    }
   })
 
 };
