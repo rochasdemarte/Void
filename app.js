@@ -1,3 +1,4 @@
+
 //-----------------------------
 var elem = document.documentElement;
 const ferramentasBar = document.querySelector('.nav-ferramentas');
@@ -30,7 +31,7 @@ fala.rate = 1;
 fala.pitch = 1;
 //-----------------------------
 fala.onend = () => {
-  ouvir();
+  //ouvir();
 };
 //-----------------------------
 let on = false;
@@ -116,7 +117,7 @@ const ouvir = () => {
 
     console.log('Ouvindo:'+transcript);
   };
-  recognition.addEventListener('end', recognition.start);
+  recognition.addEventListener('end', ouvir);
 };
 //-----------------------------
 const falar = (msg) => {
@@ -139,9 +140,9 @@ const responder = (msgRaw) => {
   let msg = msgRaw.toLowerCase();
   msg = msg.replace('?', '');
 
-  let resposta = 'Não entendi';
+  let resposta = naoSei[Math.floor(Math.random()*naoSei.length)];
 
-  if (msg.includes('void desligar')) {
+  if (msg.includes('desativar voz')) {
     if (on) {
       let resposta = 'Ok, desligando ';
       voidOnOff();
@@ -150,12 +151,12 @@ const responder = (msgRaw) => {
     }
     console.log(resposta);
     falar(resposta);
-  } else if (msg.includes('void ligar')) {
+  } else if (msg.includes('ativar voz')) {
     if (!on) {
       let resposta = 'Olá, em que posso ajudar?';
       voidOnOff();
     }  else {
-      let resposta = 'Já estou ouvindo, gostaria de alguma ajuda?';
+      let resposta = 'Já estou ouvindo, em que posso ajudar?';
     }
     console.log(resposta);
     falar(resposta);
@@ -168,6 +169,11 @@ const responder = (msgRaw) => {
     } else {
       closeFullscreen();
     }
+  } else if (msg.includes('limpar conversa')||msg.includes('limpar tela')) {
+    let resposta = 'Ok, Tela limpa';
+    console.log(resposta);
+    falar(resposta);
+    palavras.innerHTML = "";
   }
   else if (msg.includes('bom dia')) {
     let resposta = 'Bom dia, como está no dia de hoje?';
@@ -252,17 +258,40 @@ const getDia = () => {
   return `Hoje é ${time.toLocaleDateString()}`;
 };
 //-----------------------------
+
 const getWiki = (input) => {
   let pesquisa = input.replace(' ','%20');
-  fetch(`https://pt.wikipedia.org/w/api.php?action=query&list=search&srsearch=${pesquisa}&format=json&origin=*`)
+  const extractWiki =`https://pt.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=2&exlimit=1&titles=${pesquisa}&format=json&explaintext=1&formatversion=2&origin=*`;
+  fetch(extractWiki)
   .then( resposta => resposta.json())
   .then( resultadoBruto => {
-    let resultado_0 = resultadoBruto.query.search[0].snippet;
-    let resultado_0_title = resultadoBruto.query.search[0].title;
-    let resultado_lista = resultadoBruto.query.search.length;
-    console.log(resultado_lista);
+    let resultado_0 = resultadoBruto.query.pages[0].extract;
+    let resultado_0_title = resultadoBruto.query.pages[0].title;
+    console.log(resultado_0);
     let resultado_wiki_final = resultado_0;
     falar(resultado_wiki_final);
+  })
+
+};
+//-----------------------------
+const getWikiList = (input, list) => {
+  let pesquisa = input.replace(' ','%20');
+  const listWiki = `https://pt.wikipedia.org/w/api.php?action=query&list=search&srsearch=${pesquisa}&format=json&origin=*`;
+  fetch(listWiki)
+  .then( resposta => resposta.json())
+  .then( resultadoBruto => {
+    if (list) {
+      let resultado_0 = resultadoBruto.query.search[0].snippet;
+      let resultado_0_title = resultadoBruto.query.search[0].title;
+      let resultado_lista = resultadoBruto.query.search.length;
+      console.log(resultado_lista+'resultados para: '+resultado_0_title);
+      falar('Achei '+resultado_lista+' resultados para '+resultado_0_title);
+    } else {
+      let resultado_0 = resultadoBruto.query.search[0].snippet;
+      console.log(resultado_0);
+      let resultado_wiki_final = resultado_0;
+      falar(resultado_wiki_final);
+    }
   })
 };
 //-----------------------------
@@ -304,6 +333,47 @@ const getPrevisãoTempo = (cidade) => {
       return;
     }
     falar(`A previsão do tempo para ${clima.name} é de ${clima.weather[0].description}`);
+  })
+};
+//-----------------------------
+let cep_pesquisa = {};
+const getCEP = (cep) => {
+  const getCEPURL = `https://cors-anywhere.herokuapp.com/api.postmon.com.br/v1/cep/${cep}`; //*cep*
+  fetch(getCEPURL)
+  .then((response)=>{
+    return response.json();
+  }).then((endereco)=>{
+    if (endereco.cod === '404'){
+      falar(`Não consegui achar nenhum endereço para o CEP ${cep}, confira se os dígitos estão todos certos`);
+      console.log(`Não consegui achar nenhum endereço para o CEP ${cep}, confira se os dígitos estão todos certos`);
+      return;
+    }
+    falar(`CEP encontrado`);
+    cep_pesquisa = {
+      numero: endereco.cep,
+      logradouro: endereco.logradouro,
+      complemento: endereco.complemento,
+      cidade: endereco.cidade,
+      estado: endereco.estado_info.nome,
+      estado_sigla: endereco.estado,
+    }
+    console.log(cep_pesquisa);
+  })
+};
+//-----------------------------
+const getEncomenda = (codigo) => {
+  const getEncomendaURL = `https://cors-anywhere.herokuapp.com/api.postmon.com.br/v1/rastreio/ect/${codigo}`; //*codigo_rastreio*
+  fetch(getEncomendaURL)
+  .then((response)=>{
+    return response.json();
+  }).then((encomenda)=>{
+    if (encomenda.cod === '404'){
+      falar(`Não consegui achar a encomenda para o código ${codigo}`);
+      console.log(`Não consegui achar a encomenda para o código ${codigo}`);
+      return;
+    }
+    falar(`Encomenda rastreada`);
+    console.log(encomenda);
   })
 };
 //-----------------------------
