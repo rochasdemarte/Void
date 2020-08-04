@@ -1,4 +1,5 @@
 //-----------------------------
+var elem = document.documentElement;
 const ferramentasBar = document.querySelector('.nav-ferramentas');
 const mb = document.querySelector('.menu-bar');
 let navBarOpen = false;
@@ -104,7 +105,6 @@ const ouvir = () => {
       .map(result => result.transcript)
       .join('')
 
-
     if (evt.results[0].isFinal) {
       idiv = document.createElement('div');
       idiv.classList.add('user-msg');
@@ -154,11 +154,20 @@ const responder = (msgRaw) => {
     if (!on) {
       let resposta = 'Olá, em que posso ajudar?';
       voidOnOff();
-    } else {
+    }  else {
       let resposta = 'Já estou ouvindo, gostaria de alguma ajuda?';
     }
     console.log(resposta);
     falar(resposta);
+  } else if (msg.includes('full screen')||msg.includes('tela cheia')) {
+    let resposta = 'Ok';
+    console.log(resposta);
+    falar(resposta);
+    if (!document.fullscreen) {
+      openFullscreen();
+    } else {
+      closeFullscreen();
+    }
   }
   else if (msg.includes('bom dia')) {
     let resposta = 'Bom dia, como está no dia de hoje?';
@@ -297,3 +306,29 @@ const getPrevisãoTempo = (cidade) => {
     falar(`A previsão do tempo para ${clima.name} é de ${clima.weather[0].description}`);
   })
 };
+//-----------------------------
+
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) { // Firefox
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) { // Chrome, Safari e Opera
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    elem.msRequestFullscreen();
+  }
+}
+
+/* Close fullscreen */
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) { /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE/Edge */
+    document.msExitFullscreen();
+  }
+}
