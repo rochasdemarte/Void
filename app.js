@@ -233,9 +233,15 @@ const responder = (msgRaw) => {
   } else if (msg.includes('qual o significado de')) {
     console.log('Pesquisando Dicionário');
     getDicio(msg.slice(msg.lastIndexOf(' de ')+4));
+  } else if (msg.includes('o que significa')) {
+    console.log('Pesquisando Dicionário');
+    getDicio(msg.slice(msg.lastIndexOf(' significa ')+11));
   } else if (msg.includes('o que é')) {
     console.log('Pesquisando Wikpédia');
     getWiki(msg.slice(msg.lastIndexOf(' é ')+3));
+  } else if (msg.includes('o que são')) {
+    console.log('Pesquisando Wikpédia');
+    getWiki(msg.slice(msg.lastIndexOf(' são ')+5));
   }
   else if (msg.includes('qual é o')) {
     console.log('Pesquisando Wikpédia');
@@ -344,10 +350,11 @@ const getDicio = (palavra) => {
     .then( res => res.json())
       .then( signif => {
         let significado = signif[0].meanings[0];
+        let signifLength = signif[0].meanings.length;
         let signifClasseGramatical = signif[0].class;
         console.log(significado);
         console.log(signifClasseGramatical);
-        falar(significado)
+        falar(significado + 'Encontrei mais ' + signifLength + ' significados para ' + palavra)
       })
 };
 //-----------------------------
