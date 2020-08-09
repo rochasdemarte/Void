@@ -28,7 +28,7 @@ const fala = new SpeechSynthesisUtterance();
 fala.voice = synth.getVoices()[16];
 fala.lang = 'pt_BR';
 fala.volume = 1;
-fala.rate = 1;
+fala.rate = 1.4;
 fala.pitch = 1;
 //-----------------------------
 let on = false;
@@ -294,6 +294,8 @@ const responder = (msgRaw) => {
   lastComando = msgRaw;
 };
 //-----------------------------
+
+//-----------------------------
 const getHora = () => {
   const time = new Date(Date.now());
   return `Agora são ${time.toLocaleTimeString('pt-BR', { hour: 'numeric', minute: 'numeric', hour12: false })}`;
@@ -304,7 +306,14 @@ const getDia = () => {
   return `Hoje é ${time.toLocaleDateString()}`;
 };
 //-----------------------------
-
+const getHTML = (input) => {
+  let pesquisa = input.replace(' ','%20');
+  const url = `https://https://cors-anywhere.herokuapp.com/tudogostoso.com.br/busca?q=${pesquisa}`;
+  const html = (await (await fetch(url)).text());
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  // doc.body;
+}
+//-----------------------------
 const getWiki = (input) => {
   let pesquisa = input.replace(' ','%20');
   const extractWiki =`https://pt.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=2&exlimit=1&titles=${pesquisa}&format=json&explaintext=1&formatversion=2&origin=*`;
@@ -319,6 +328,26 @@ const getWiki = (input) => {
       getWikiList(pesquisa, false);
     } else {
       falar(resultado_wiki_final);
+    }
+  })
+
+};
+//-----------------------------
+const getWikiImage = (input) => {
+  let pesquisa = input.replace(' ','%20');
+  const imageWiki =`https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=${pesquisa}&origin=*`;
+  fetch(imageWiki)
+  .then( resposta => resposta.json())
+  .then( res => {
+    let pagina = res.query.pages;
+    let imgURLpagina = Object.values(pages)[0].original.source;
+    let paginatitulo = Object.values(pages)[0].title;
+    console.log(paginatitulo);
+    let resultado_wiki_final = imgURLpagina;
+    if (resultado_wiki_final === '') {
+      console.log('Não encontrei imagem para '+paginatitulo);
+    } else {
+      console.log('Link encontrado');
     }
   })
 
@@ -358,6 +387,19 @@ const getDicio = (palavra) => {
       })
 };
 //-----------------------------
+const getReceita = (palavra) => {
+  fetch(`https://cors-anywhere.herokuapp.com/significado.herokuapp.com/${palavra}`)
+    .then( res => res.json())
+      .then( livroreceita => {
+        let significado = signif[0].meanings[0];
+        let signifLength = signif[0].meanings.length;
+        let signifClasseGramatical = signif[0].class;
+        console.log(significado);
+        console.log(signifClasseGramatical);
+        falar(significado + 'Encontrei mais ' + signifLength + ' significados para ' + palavra)
+      })
+};
+//-----------------------------
 const getTemperatura = (cidade) => {
   //comando.split(' ')[5]
   fetch(`https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${wKey()}&units=metric&lang=pt_br`)
@@ -386,6 +428,8 @@ const getPrevisãoTempo = (cidade) => {
     falar(`A previsão do tempo para ${clima.name} é de ${clima.weather[0].description}`);
   })
 };
+//-----------------------------
+
 //-----------------------------
 let cep_pesquisa = {};
 const getCEP = (cep) => {
@@ -428,8 +472,7 @@ const getEncomenda = (codigo) => {
   })
 };
 //-----------------------------
-
-function openFullscreen() {
+const openFullscreen = () => {
   if (elem.requestFullscreen) {
     elem.requestFullscreen();
   } else if (elem.mozRequestFullScreen) { // Firefox
@@ -440,9 +483,7 @@ function openFullscreen() {
     elem.msRequestFullscreen();
   }
 }
-
-/* Close fullscreen */
-function closeFullscreen() {
+const closeFullscreen = () => {
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.mozCancelFullScreen) { /* Firefox */
