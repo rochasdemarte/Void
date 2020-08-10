@@ -347,7 +347,7 @@ const getDia = () => {
 const getHTML = (input) => {
   let pesquisa = input.replace(' ','%20');
   const url = `https://https://cors-anywhere.herokuapp.com/tudogostoso.com.br/busca?q=${pesquisa}`;
-  const html = (await (await fetch(url)).text());
+  const html = await (await fetch(url)).text();
   const doc = new DOMParser().parseFromString(html, 'text/html');
   // doc.body;
 }
