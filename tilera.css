@@ -93,6 +93,18 @@ div {
   /*box-shadow: inset 1px 1px 20px rgb(0,0,10);*/
 }
 
+.bloco-de-notas {
+  width: 80%;
+  height: 85%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: fixed;
+  border-radius: 5px;
+  left: 25px;
+  bottom: 60px;
+  box-shadow: inset -5px -15px 20px rgba(0,0,10,0.2);
+}
+
 .msg {
   width: 50%;
   height: 40px;

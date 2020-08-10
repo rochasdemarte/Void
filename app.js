@@ -1,4 +1,3 @@
-
 //-----------------------------
 var elem = document.documentElement;
 const ferramentasBar = document.querySelector('.nav-ferramentas');
@@ -10,6 +9,7 @@ const send = document.querySelector('.send');
 const mic = document.querySelector('.mic');
 const micIcon = document.querySelector('.fa-microphone-slash');
 const palavras = document.querySelector('.palavras');
+const blocoDeNotas = document.querySelector('.bloco-de-notas');
 let div = document.createElement('div');
 let idiv = document.createElement('div');
 let brLine = document.createElement('br');
@@ -18,7 +18,8 @@ const wKey = () =>{
   return '668ee6a4b1983a6a992d85802ac27508';
 }
 //-----------------------------
-
+let onEscritaDireta = false;
+let finalTranscript = '';
 var SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 const recognition = new SpeechRecognition();
 recognition.interimResults = true;
@@ -26,10 +27,31 @@ recognition.interimResults = true;
 const synth = window.speechSynthesis;
 const fala = new SpeechSynthesisUtterance();
 fala.voice = synth.getVoices()[16];
-fala.lang = 'pt_BR';
+fala.lang = 'pt-BR';
 fala.volume = 1;
-fala.rate = 1.4;
+fala.rate = 1.5;
 fala.pitch = 1;
+//-----------------------------
+const vozOpt = document.querySelector('#vozesOpt');
+const vozVolume = document.querySelector('#vozVol');
+const vozR = document.querySelector('#vozRate');
+const vozP = document.querySelector('#vozPitch');
+let vozMap = [];
+//-----------------------------
+const loadVozes = () => {
+  let vozes = synth.getVoices();
+  for (var i = 0; i < vozes.length; i++) {
+    let voz = vozes[i];
+    let op = document.createElement('option');
+    op.value = voz.name;
+    op.innerHTML = voz.name;
+    vozOpt.appendChild(op);
+    vozMap[voz.name] = voz;
+  }
+}
+synth.onvoiceschanged = () => {
+  loadVozes();
+}
 //-----------------------------
 let on = false;
 let onCounter = true;
@@ -100,6 +122,11 @@ fala.onend = () => {
   ouvir();
 };
 //-----------------------------
+const escritaDireta = () => {
+  onEscritaDireta = !onEscritaDireta;
+  recognition.continuous = !recognition.continuous;
+}
+//-----------------------------
 const insereConversa = (isUser, text) => {
   if (isUser) {
     idiv = document.createElement('div');
@@ -131,21 +158,33 @@ const ouvir = () => {
   recognition.start();
   recognition.onresult = evt => {
     console.log(evt);
-    const transcript = Array.from(evt.results)
-      .map(result => result[0])
-      .map(result => result.transcript)
-      .join('')
+    if (onEscritaDireta) {
+      let interimTranscripts = '';
+      for (var i = evt.resultIndex; i < evt.results.length; i++) {
+        let transcript = evt.results[i][0].transcript;
+        if (evt.results[i].isFinal && on) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscripts += transcript;
+        }
+      }
+      blocoDeNotas.innerHTML = finalTranscript + '<span style="color:#999">' + interimResults + '</span>';
+    } else {
+      const transcript = Array.from(evt.results)
+        .map(result => result[0])
+        .map(result => result.transcript)
+        .join('')
 
-    if (evt.results[0].isFinal && (on || transcript.toLowerCase() === 'ativar voz')) {
-      idiv = document.createElement('div');
-      idiv.classList.add('user-msg');
-      palavras.appendChild(idiv);
-      idiv.innerHTML = transcript;
-      palavras.scrollTop = palavras.scrollHeight;
-      responder(transcript);
+      if (evt.results[0].isFinal && (on || transcript.toLowerCase() === 'ativar voz')) {
+        idiv = document.createElement('div');
+        idiv.classList.add('user-msg');
+        palavras.appendChild(idiv);
+        idiv.innerHTML = transcript;
+        palavras.scrollTop = palavras.scrollHeight;
+        responder(transcript);
+      }
+      console.log('Ouvindo:'+transcript);
     }
-
-    console.log('Ouvindo:'+transcript);
   };
   recognition.addEventListener('end', ouvir);
 };
@@ -160,6 +199,7 @@ const falar = (msg) => {
     }
     div.innerHTML = msg;
     palavras.scrollTop = palavras.scrollHeight;
+    //fala.voice = vozMap[vozOpt.value];
     fala.voice = synth.getVoices()[16];
     let msgNoSpan = msg.replace(/<span class=\"searchmatch\">|<\/span>|&nbsp;/g, '');
     fala.text = msgNoSpan;
@@ -294,8 +334,6 @@ const responder = (msgRaw) => {
   lastComando = msgRaw;
 };
 //-----------------------------
-
-//-----------------------------
 const getHora = () => {
   const time = new Date(Date.now());
   return `Agora são ${time.toLocaleTimeString('pt-BR', { hour: 'numeric', minute: 'numeric', hour12: false })}`;
@@ -428,8 +466,6 @@ const getPrevisãoTempo = (cidade) => {
     falar(`A previsão do tempo para ${clima.name} é de ${clima.weather[0].description}`);
   })
 };
-//-----------------------------
-
 //-----------------------------
 let cep_pesquisa = {};
 const getCEP = (cep) => {

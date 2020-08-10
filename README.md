@@ -24,8 +24,13 @@ Uma plataforma para automação de tarefas e auxílio em ações por comandos de
 - [ ] Pesquisar receitas culinárias.
   - [ ] *Auxiliar passo a passo em receitas.*
 #### - Escrever Textos:
-- [ ] Escrita direta em bloco de notas. Ditar, salvar e compartilhar textos.
-- [ ] Escrita diagramada por comandos de voz. Salvar e compartilhar em PDF.
+- [ ] Escrita direta em bloco de notas.
+  - [ ] *Ditar*.
+  - [ ] *Salvar*.
+  - [ ] *Compartilhar*.
+- [ ] Escrita diagramada por comandos de voz.
+  - [ ] *Salvar*.
+  - [ ] *Compartilhar*.
 - [ ] Livro de Receitas ditadas. Banco de dados de receitas pesquisadas e criadas.
 
 Em construção...
