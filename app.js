@@ -349,8 +349,8 @@ const getDia = () => {
 //   const url = `https://https://cors-anywhere.herokuapp.com/tudogostoso.com.br/busca?q=${pesquisa}`;
 //   const html = await fetch(url).text();
 //   const doc = new DOMParser().parseFromString(html, 'text/html');
-  // doc.body;
-}
+//   doc.body;
+//}
 //-----------------------------
 const getWiki = (input) => {
   let pesquisa = input.replace(' ','%20');
