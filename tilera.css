@@ -94,6 +94,7 @@ div {
 }
 
 .bloco-de-notas {
+  display: none;
   width: 80%;
   height: 85%;
   overflow-y: scroll;
@@ -103,6 +104,10 @@ div {
   left: 25px;
   bottom: 60px;
   box-shadow: inset -5px -15px 20px rgba(0,0,10,0.2);
+}
+
+.config-app {
+  display: none;
 }
 
 .msg {
@@ -185,6 +190,9 @@ div {
     width: 70%;
   }
   .palavras {
+    width: 67%;
+  }
+  .bloco-de-notas {
     width: 67%;
   }
 }
