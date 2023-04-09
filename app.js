@@ -26,7 +26,7 @@ recognition.interimResults = true;
 
 const synth = window.speechSynthesis;
 const fala = new SpeechSynthesisUtterance();
-fala.voice = synth.getVoices()[10];
+fala.voice = synth.getVoices()[0];
 fala.lang = 'pt-BR';
 fala.volume = 1;
 fala.rate = 1.5;
