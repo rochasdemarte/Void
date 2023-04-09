@@ -413,7 +413,7 @@ const getWikiList = (input, list) => {
 };
 //-----------------------------
 const getDicio = (palavra) => {
-  fetch(`https://cors-anywhere.herokuapp.com/significado.herokuapp.com/${palavra}`)
+  fetch(`https://dicio-api-ten.vercel.app/v2/livro${palavra}`)
     .then( res => res.json())
       .then( signif => {
         let significado = signif[0].meanings[0];
